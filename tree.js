@@ -8,7 +8,7 @@ class Node {
 let root;
 
 function setup() {
-    CreateCanvas(windowWidth, windowHeight);
+    createCanvas(windowWidth, windowHeight);
     root = new Node(10);
     root.left = new Node(8);
     root.right = new Node(12);
@@ -37,7 +37,7 @@ stroke(0);
 ellipse(x, y, 50, 50);
 fill(0);
 noStroke();
-txet(node.value, x, y);
+text(node.value, x, y);
 if (node.left != null) {
     stroke(0);
     line(x, y, x - spacing, y + 100); // 畫連到左邊的線
