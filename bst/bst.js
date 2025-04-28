@@ -82,7 +82,7 @@ function updatePositions(node, x, y, spacing) {
 }
 
 function onInsertPressed() {
-  let value = int(inputBox.value());
+  let value = float(inputBox.value());
   if(!isNaN(value)){
     insert(value);
     inputBox.value('');
