@@ -10,22 +10,24 @@ class Node {
 
 let root;
 function setup() {
-  createCanvas(windowWidth, windowHeight);
-  root = null; // 一開始是空樹
-  inputBox = createInput();
-  inputBox.position(20 ,20);
-  inputBox.size(100);
-  insertButton = createButton('insert');
-  insertButton.position(130, 20);
-  insertButton.mousePressed(onInsertPressed);
+    createCanvas(windowWidth, windowHeight);
+    root = null; // 一開始是空樹
+    inputBox = createInput();
+    inputBox.position(20, 20);
+    inputBox.size(100);
+    insertButton = createButton('insert');
+    insertButton.position(130, 20);
+    insertButton.mousePressed(onInsertPressed);
 }
 function draw() {
+    if (keyIsPressed === true && keyCode === ENTER) onInsertPressed();
     background(255, 220, 250);
     textAlign(CENTER, CENTER);
     textSize(20);
     drawTree(root);
 }
 function drawTree(node) {
+    updatePositions(root, width / 2, 100, width / 6);
     if (node == null) {
         return;
     }
@@ -41,7 +43,8 @@ function drawTree(node) {
         drawTree(node.right);
     }
 
-    fill(255, 150, 200);
+    if (node.highlighted) fill(255, 200, 200);
+    else fill(255, 150, 200);
     stroke(0);
     ellipse(node.x, node.y, 50, 50);
     fill(0);
@@ -51,20 +54,36 @@ function drawTree(node) {
 
 // 插入新數字
 function insert(value) {
-    root = insertNode(root, value);
-    updatePositions(root, width/2, 100, width/6); // 每次插入後更新座標
+    if (root == null) root = new Node(value);
+    else insertNode(root, value);
+
+}
+function highlight(node) {
+    node.highlighted = 1; setTimeout(() => { node.highlighted = 0 }, 900)
 }
 
 // 插入的輔助函數
 function insertNode(node, value) {
-    if (node == null) {
-        return new Node(value);
-    }
-    if (value < node.value) {
-        node.left = insertNode(node.left, value);
-    } else if (value > node.value) {
-        node.right = insertNode(node.right, value);
-    }
+
+    setTimeout(() => {
+        if (value < node.value) {
+            if (node.left == null)
+                node.left = new Node(value);
+            else
+                insertNode(node.left, value);
+            highlight(node.left);
+
+        } else if (value > node.value) {
+
+            if (node.right == null)
+                node.right = new Node(value);
+            else
+                insertNode(node.right, value);
+            highlight(node.right);
+
+        }
+    }, 600)
+
     return node;
 }
 
@@ -82,9 +101,10 @@ function updatePositions(node, x, y, spacing) {
 }
 
 function onInsertPressed() {
-  let value = float(inputBox.value());
-  if(!isNaN(value)){
-    insert(value);
-    inputBox.value('');
-  }
+    let value = float(inputBox.value());
+    if (!isNaN(value)) {
+        if(root) highlight(root);
+        insert(value);
+        inputBox.value('');
+    }
 }
